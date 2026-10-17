@@ -35,13 +35,29 @@ export const profile = {
 };
 
 export const services = [
-  { t: "Frontend Development", d: "Pixel-perfect, responsive interfaces with smooth animation.", c: "React & Tailwind" },
-  { t: "Backend Development", d: "REST APIs, auth and server logic built to scale.", c: "Node.js & Express" },
-  { t: "Database Design", d: "Relational and NoSQL schemas, queries and optimization.", c: "SQL & MongoDB" },
-  { t: "ASP.NET Core", d: "Layered MVC applications with clean architecture.", c: "C# & Entity Framework" },
+  {
+    t: "Frontend Development",
+    d: "Building pixel-perfect, highly responsive, and immersive web interfaces powered by fluid animations and modern UI/UX principles.",
+    c: "React & Tailwind",
+  },
+  {
+    t: "Backend Development",
+    d: "Architecting scalable REST APIs, secure authentication flows, and high-throughput server logic designed for enterprise growth.",
+    c: "Node.js & Express",
+  },
+  {
+    t: "Database Design",
+    d: "Designing robust relational and NoSQL schemas optimized for lightning-fast queries, data integrity, and seamless scalability.",
+    c: "SQL & MongoDB",
+  },
+  {
+    t: "Cloud & DevOps",
+    d: "Deploying secure, scalable cloud infrastructure with automated CI/CD pipelines and high-availability server management.",
+    c: "AWS, Docker & CI/CD",
+  },
   {
     t: "Flutter & Dart + SEO",
-    d: "Building modern cross-platform mobile applications with Flutter and Dart, combined with SEO strategies to improve online visibility, search rankings and organic reach.",
+    d: "Crafting high-performance cross-platform mobile applications integrated with advanced SEO strategies to maximize digital reach and visibility.",
     c: "Flutter & SEO",
   },
 ];

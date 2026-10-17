@@ -1,89 +1,72 @@
 "use client";
 import { useEffect, useLayoutEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-/* The trigger is the Contact SECTION, not the page. While the section overlaps
-   this viewport window the cards sit at rest; the moment it enters the window
-   `.in` is added and the cards glide in from their sides, and when it fully
-   leaves the window `.in` is removed so they return to their sides, ready to
-   replay on the next entry - from either direction, every time. */
-const ROOT_MARGIN = "0px 0px -20% 0px";
-
-/**
- * Contact card entrance, triggered by the Contact section entering the
- * viewport - the same IntersectionObserver architecture the rest of the page
- * uses (`.reveal`, `.section-heading`), so no new animation library is added.
- *
- * The left card travels in from the left and the right card from the right,
- * both gliding smoothly into their exact existing grid positions. The motion
- * itself is a CSS transition on `#contact.in .contact-animate`, so:
- *
- *   - It NEVER runs on page load: Contact is below the fold at load, the hook
- *     simply toggles `.in` when the section actually reaches the trigger
- *     window (~80% of the viewport height, so the entrance starts before the
- *     cards are fully visible).
- *   - It replays every entry: scrolling down into Contact and scrolling up
- *     into Contact from below both re-add `.in` and replay the entrance.
- *   - It resets when Contact leaves: fully scrolling past the section removes
- *     `.in`, returning the cards to their side starts for the next run.
- *
- * The start state is written by JS (so no-JS and reduced-motion visitors keep
- * the normal layout), which means it can only be applied AFTER first paint.
- * `html.contact-primed` holds the transition off while that first application
- * is committed, so the cards never play the entrance in reverse during load;
- * the priming is released once the observer has delivered its first state.
- *
- * No `once`, no one-shot timeline, no load-time trigger. Reduced-motion users
- * and no-JS visitors simply see the cards in their normal resting layout.
- */
+/* Contact card entrance, driven by a GSAP ScrollTrigger timeline:
+   - The form (right card) leads from the right; the Introduction card
+     follows 0.12s later from the left, so the pair reads as a staged
+     sequence instead of two simultaneous slides.
+   - `toggleActions: "play none none reverse"`: entering the section plays
+     the entrance, scrolling back above it reverses it, so the cards glide
+     away and replay on every re-entry from either direction - the same
+     behaviour the old IntersectionObserver + CSS transition pair had.
+   - The start offsets mirror that old CSS entrance: ~105% of each card's
+     own width on desktop (18% on mobile, where the cards stack), plus a
+     small rise, a 0.94 scale and a tilt toward the centre. The values are
+     functions so `invalidateOnRefresh` recomputes them after a resize, and
+     GSAP owns the transforms entirely - the resting state is simply the
+     plain grid layout, exactly what no-JS visitors always see.
+   - prefers-reduced-motion: the hook does nothing at all - the cards sit
+     in their normal grid position from the start. */
 export default function useContactScroll() {
   useIsomorphicLayoutEffect(() => {
     const section = document.getElementById("contact");
     if (!section) return;
-    if (typeof IntersectionObserver === "undefined") return;
+    const right = section.querySelector(".contact-right");
+    const left = section.querySelector(".contact-left");
+    if (!left || !right) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const cards = section.querySelectorAll(".contact-animate");
-    if (!cards.length) return;
+    gsap.registerPlugin(ScrollTrigger);
 
-    const root = document.documentElement;
-    let disposed = false;
-    let priming = true;
+    const startState = (dir) => ({
+      xPercent: () => dir * (window.innerWidth < 768 ? 18 : 105),
+      y: () => (window.innerWidth < 768 ? 14 : 26),
+      scale: 0.94,
+      rotate: () => dir * (window.innerWidth < 768 ? 1.2 : 1.6),
+      opacity: 0,
+      duration: 1.1,
+      ease: "power4.out",
+    });
 
-    function releasePriming() {
-      if (!priming) return;
-      priming = false;
-      requestAnimationFrame(() => {
-        if (disposed) return;
-        root.classList.remove("contact-primed");
-      });
-    }
-
-    root.classList.add("contact-primed");
-    root.classList.add("has-contact-anim");
-    // Forces the style flush that commits the start state while the
-    // transition is still disabled.
-    cards.forEach((card) => void getComputedStyle(card).transform);
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          section.classList.toggle("in", entry.isIntersecting);
-        });
-        releasePriming();
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+        invalidateOnRefresh: true,
       },
-      { rootMargin: ROOT_MARGIN }
-    );
+    });
+    tl.from(right, startState(1), 0);
+    tl.from(left, startState(-1), 0.12);
 
-    io.observe(section);
+    /* Re-measure the trigger once the page (webfonts, images) and a short
+       settle-delay finish, so `top 80%` is never measured against a shifted
+       layout. */
+    const refreshTriggers = () => ScrollTrigger.refresh();
+    window.addEventListener("load", refreshTriggers);
+    const refreshTimer = window.setTimeout(refreshTriggers, 350);
 
     return () => {
-      disposed = true;
-      io.disconnect();
-      root.classList.remove("contact-primed");
-      root.classList.remove("has-contact-anim");
-      section.classList.remove("in");
+      window.removeEventListener("load", refreshTriggers);
+      window.clearTimeout(refreshTimer);
+      if (tl.scrollTrigger) tl.scrollTrigger.kill();
+      tl.kill();
+      gsap.set([left, right], { clearProps: "all" });
     };
   }, []);
 }

@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 const COPIES = 6;
 
 export default function InfiniteMarquee({
@@ -23,7 +25,9 @@ export default function InfiniteMarquee({
             className={`marquee-set ${copy > 0 ? "marquee-duplicate" : ""}`}
             aria-hidden={copy > 0 || undefined}
           >
-            {items.map((item, i) => renderItem(item, i))}
+            {items.map((item, i) => (
+              <Fragment key={i}>{renderItem(item, i)}</Fragment>
+            ))}
           </div>
         ))}
       </div>

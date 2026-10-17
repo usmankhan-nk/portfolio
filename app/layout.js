@@ -1,5 +1,7 @@
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import "lenis/dist/lenis.css";
+import SmoothScroll from "./components/SmoothScroll";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -21,7 +23,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${archivo.variable} ${mono.variable}`}>
-      <body className="font-sans">{children}</body>
+      <head>
+        {/* Prioritise the first frame so the hero footage appears instantly. */}
+        <link rel="preload" as="image" href="/frames/ezgif-frame-001.jpg" fetchPriority="high" />
+      </head>
+      <body className="font-sans">
+        <SmoothScroll />
+        {children}
+      </body>
     </html>
   );
 }

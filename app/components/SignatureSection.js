@@ -23,7 +23,7 @@ export default function SignatureSection() {
 
       <div className="relative z-10 max-w-6xl mx-auto text-center">
         <span className="mono-label !text-gold border border-line rounded-full px-3.5 py-1.5 bg-slate inline-block reveal">
-          // Signature
+          . Signature
         </span>
 
         <div className="signature-rule reveal mt-8 md:mt-10" aria-hidden="true" />

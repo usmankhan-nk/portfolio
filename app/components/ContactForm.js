@@ -21,9 +21,9 @@ export default function ContactForm({ email, className = "" }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className={`flex flex-col rounded-3xl border border-line bg-slate p-8 ${className}`}
+      className={`flex flex-col rounded-3xl border border-line bg-slate p-6 sm:p-8 ${className}`}
     >
-      <span className="mono-label !text-gold">// Send a message</span>
+      <span className="mono-label !text-gold">. Send a message</span>
       <div className="grid gap-4 mt-6 sm:grid-cols-2">
         <label className="flex flex-col gap-2">
           <span className="mono-label !text-ink/55">Name</span>
