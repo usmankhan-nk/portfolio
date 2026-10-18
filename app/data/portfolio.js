@@ -125,13 +125,16 @@ export const projects = [
 ];
 
 export const socials = [
-  { name: "GitHub", url: "#" },
-  { name: "LinkedIn", url: "#" },
-  { name: "Resume", url: "#" },
+  { name: "GitHub", url: "https://github.com/usmankhan-nk", external: true },
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/muhammad-usman-khan-943a60444", external: true },
+  // TODO: drop the resume PDF in `public/` (e.g. "/resume.pdf") or paste the
+  // hosted resume link — the button renders as a non-clickable placeholder
+  // until `url` is filled in.
+  { name: "Resume", url: "", external: true },
 ];
 
 export const contact = {
-  email: "you@example.com",
+  email: "mukusmankhan0@gmail.com",
   headline: "CONTACT",
   subline: "Let's build something great together",
   intro: "Have a project in mind or just want to say hi? I'm always open to discussing new ideas, collaborations, or opportunities — drop me a message and I'll get back to you.",

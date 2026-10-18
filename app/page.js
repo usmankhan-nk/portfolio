@@ -635,15 +635,30 @@ export default function Home() {
                 <h3 className="mt-4 text-[clamp(1.5rem,3vw,2rem)] font-black leading-tight text-white">{contact.subline}</h3>
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-ink/70">{contact.intro}</p>
                 <div className="flex flex-wrap gap-3 mt-8">
-                  {socials.map((s) => (
-                    <a
-                      key={s.name}
-                      href={s.url}
-                      className="rounded-full border border-line/80 text-[12px] font-bold px-5 py-2.5 text-ink hover:-translate-y-0.5 hover:border-gold hover:text-gold-bright transition"
-                    >
-                      {s.name}
-                    </a>
-                  ))}
+                  {socials.map((s) => {
+                    const cls =
+                      "rounded-full border border-line/80 text-[12px] font-bold px-5 py-2.5 text-ink hover:-translate-y-0.5 hover:border-gold hover:text-gold-bright transition";
+                    // Links without a URL stay visible as placeholders so the
+                    // design is untouched until the real URL is added in
+                    // app/data/portfolio.js.
+                    if (!s.url)
+                      return (
+                        <span key={s.name} className={cls} aria-disabled="true">
+                          {s.name}
+                        </span>
+                      );
+                    return (
+                      <a
+                        key={s.name}
+                        href={s.url}
+                        target={s.external ? "_blank" : undefined}
+                        rel={s.external ? "noopener noreferrer" : undefined}
+                        className={cls}
+                      >
+                        {s.name}
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
               <a

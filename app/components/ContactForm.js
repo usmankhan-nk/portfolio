@@ -36,7 +36,7 @@ export default function ContactForm({ email, className = "" }) {
             type="email"
             value={form.email}
             onChange={update("email")}
-            placeholder="you@example.com"
+            placeholder="mukusmankhan0@gmail.com"
             className={FIELD_CLS}
           />
         </label>
