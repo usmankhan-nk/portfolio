@@ -26,7 +26,7 @@ export default function InfiniteMarquee({
             aria-hidden={copy > 0 || undefined}
           >
             {items.map((item, i) => (
-              <Fragment key={i}>{renderItem(item, i)}</Fragment>
+              <Fragment key={i}>{renderItem(item, i, { duplicate: copy > 0 })}</Fragment>
             ))}
           </div>
         ))}

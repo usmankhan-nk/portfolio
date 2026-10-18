@@ -90,24 +90,37 @@ export const technologyRows = [
   ],
 ];
 
+/* Each card links itself: `url` (live site) wins over `repo` (GitHub), and
+   the first non-empty one makes the whole card clickable - it opens in a new
+   tab. Leave both empty to keep a card non-clickable.
+
+   The `url` values below are PLACEHOLDERS (example.com) because no live URLs
+   exist yet - replace them with the real ones when the projects are deployed,
+   and drop the GitHub URL into `repo` for projects that only have a repository. */
 export const projects = [
   {
     n: "College Event Management",
     tag: "MERN Stack",
     d: "Full-stack event platform with registrations, admin dashboard and an immersive 3D animated frontend.",
     tech: ["React", "Node.js", "MongoDB", "Express", "Three.js"],
+    url: "https://example.com/?project=college-event-management", // TODO: real live URL
+    repo: "", // TODO: GitHub URL (used only when `url` is empty)
   },
   {
     n: "PathSeeker",
     tag: "MEAN Stack",
     d: "Career guidance web app that recommends paths based on interests and skills. Built for a full-stack competition.",
     tech: ["Angular", "Node.js", "MongoDB", "Express"],
+    url: "https://example.com/?project=pathseeker", // TODO: real live URL
+    repo: "", // TODO: GitHub URL (used only when `url` is empty)
   },
   {
     n: "NedAcademy",
     tag: "ASP.NET Core MVC",
     d: "Large-scale academic management system built phase by phase with role-based access and reporting.",
     tech: ["C#", "ASP.NET Core", "SQL Server", "EF Core"],
+    url: "https://example.com/?project=nedacademy", // TODO: real live URL
+    repo: "", // TODO: GitHub URL (used only when `url` is empty)
   },
 ];
 

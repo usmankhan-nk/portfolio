@@ -69,9 +69,30 @@ function ServiceCard({ s, i }) {
   );
 }
 
-function ProjectCard({ p, i }) {
-  return (
-    <div className="text-left border border-line/60 bg-slate rounded-2xl p-6 h-full hover:border-gold/60 hover:shadow-[0_20px_40px_-22px_rgba(212,175,55,0.3)] transition">
+/* Featured project card.
+
+   Destination: `url` (live site) first, `repo` (GitHub) as fallback - the
+   first non-empty one turns the WHOLE card into a single anchor that opens
+   the project in a new tab, so a click anywhere on the card works. It stays
+   one flat link (no buttons nested inside), which keeps the markup valid and
+   gives the card one accessible name from `aria-label`. Without a destination
+   the card renders as the exact same non-interactive div as before.
+
+   The classes are the original ones plus `block` (an anchor is inline by
+   default, so without it the card would collapse) and a focus ring that only
+   appears for keyboard users - layout, colours, hover glow, spacing and the
+   entrance animation are untouched.
+
+   `duplicate` marks cards living in the marquee's repeated copies: those sets
+   are aria-hidden, so their links leave the tab order instead of being
+   reachable (and announced) 6 times. */
+function ProjectCard({ p, i, duplicate = false }) {
+  const href = p.url || p.repo || "";
+  const classes =
+    "text-left border border-line/60 bg-slate rounded-2xl p-6 h-full hover:border-gold/60 hover:shadow-[0_20px_40px_-22px_rgba(212,175,55,0.3)] transition";
+
+  const body = (
+    <>
       <div className="flex justify-between items-center">
         <span className="mono-label !text-ink/45">. Project 0{i + 1}</span>
         <span className="mono-label !text-gold border border-gold/40 rounded-full px-3 py-1 bg-ash">{p.tag}</span>
@@ -85,7 +106,22 @@ function ProjectCard({ p, i }) {
           </span>
         ))}
       </div>
-    </div>
+    </>
+  );
+
+  if (!href) return <div className={classes}>{body}</div>;
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${p.n} - open project in a new tab`}
+      tabIndex={duplicate ? -1 : undefined}
+      className={`block ${classes} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-coal`}
+    >
+      {body}
+    </a>
   );
 }
 
@@ -573,9 +609,9 @@ export default function Home() {
           gap={20}
           speed={50}
           reverse
-          renderItem={(p, i) => (
+          renderItem={(p, i, meta) => (
             <div className="w-[min(82vw,340px)] shrink-0" data-slide-in={i % 2 === 0 ? "left" : "right"}>
-              <ProjectCard p={p} i={i} />
+              <ProjectCard p={p} i={i} duplicate={meta?.duplicate} />
             </div>
           )}
         />
